@@ -1,3 +1,5 @@
+package src;
+
 import javax.swing.*;
 import java.util.Random;
 
@@ -12,7 +14,7 @@ public class Player extends Story.NPC {
         this.name = JOptionPane.showInputDialog(null, "Please enter your name", PLAYER, JOptionPane.QUESTION_MESSAGE);
         iconNumber+=(new Random().nextInt(0, 2)); //Use this method to ensure that there is never a duplicate icon for two players
         iconNumber%=3;
-        setIcon("smile"+iconNumber);
+        setIcon("images\\smile"+iconNumber);
         setTitle(name);
         playerNumber++;
     }

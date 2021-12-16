@@ -1,3 +1,5 @@
+package src;
+
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,7 +42,7 @@ public class Word {
     public static Word generateWord(){
         String secretWord;
         Scanner wordBank;
-        final String bankPath = "src\\hangmanWords.txt";
+        final String bankPath = "hangmanWords.txt";
         ArrayList<String> words = new ArrayList<>();
 
         try {

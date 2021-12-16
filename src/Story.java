@@ -1,10 +1,12 @@
+package src;
+
 import javax.swing.*;
 import java.util.Random;
 
 public class Story {
-    static Player player = new Player("src\\victim.png", "You");
-    static NPC priest = new NPC("src\\puritan.png", "Puritan Priest");
-    static NPC accuser = new NPC("src\\accuser.png", "Accuser");
+    static Player player = new Player("images\\victim.png", "You");
+    static NPC priest = new NPC("images\\puritan.png", "Puritan Priest");
+    static NPC accuser = new NPC("images\\accuser.png", "Accuser");
 
     public static void start(){
         priest.speak("You have been accused of witchcraft and heresy!");

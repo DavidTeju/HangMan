@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class Story {
     static Player player = new Player("images\\victim.png", "You");
-    static NPC priest = new NPC("images\\puritan.png", "Puritan Priest");
-    static NPC accuser = new NPC("images\\accuser.png", "Accuser");
+    static GameCharacter priest = new GameCharacter("images\\puritan.png", "Puritan Priest");
+    static GameCharacter accuser = new GameCharacter("images\\accuser.png", "Accuser");
 
     public static void start(){
         priest.speak("You have been accused of witchcraft and heresy!");
@@ -89,16 +89,16 @@ public class Story {
     }
 
 
-    static class NPC{
+    static class GameCharacter {
         private ImageIcon icon = null;
         private String title = null;
 
-        public NPC(String newIcon, String newTitle) {
+        public GameCharacter(String newIcon, String newTitle) {
             icon = new ImageIcon(newIcon);
             title = newTitle;
         }
 
-        public NPC(){
+        public GameCharacter(){
         }
 
         public void setIcon(String newIcon){

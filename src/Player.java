@@ -3,7 +3,7 @@ package src;
 import javax.swing.*;
 import java.util.Random;
 
-public class Player extends Story.NPC {
+public class Player extends Story.GameCharacter {
     private int score = 0;
     private final String name;
     private static int playerNumber = 1;
@@ -33,9 +33,5 @@ public class Player extends Story.NPC {
 
     public void awardPoint(){
         score++;
-    }
-
-    public String getPlayer() {
-        return PLAYER;
     }
 }

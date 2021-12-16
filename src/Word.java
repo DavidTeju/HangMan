@@ -31,7 +31,7 @@ public class Word {
     }
 
     public static Word getPlayerWord(Player player) {
-        String wordToPass = JOptionPane.showInputDialog(player.getName() + "Please input your secret word");
+        String wordToPass = JOptionPane.showInputDialog(player.getName() + ", please input your secret word");
         while (wordToPass.length() > 8 || wordToPass.length() < 4) {
             JOptionPane.showMessageDialog(null, "Please input a word between 4 and 8", "Error", JOptionPane.WARNING_MESSAGE);
             wordToPass = JOptionPane.showInputDialog("Please input your secret word");
@@ -90,16 +90,24 @@ public class Word {
                 guess = Character.toUpperCase(guess);
             }
             catch (StringIndexOutOfBoundsException e){
-                Story.priest.speak("Speak up!");
+                if (Main.getMode().equals("single"))
+                    Story.priest.speak("Speak up!");
+                else //if multiplayer mode then bland prompt
+                    JOptionPane.showMessageDialog(null, "Please input a guess");
             }
             if (attempts.toString().contains(guess + " ✓") || attempts.toString().contains(guess + " X"))
-                if (repeated){
-                    Story.priest.speak("Are you mocking me?");
-                    JOptionPane.showMessageDialog(null, "You have lost a guess attempt for angering the priest");
-                    return false;
-                }
-                else  {
-                    Story.priest.speak("You've already guessed that letter!\nMake that mistake again and you'll lose a guess attempt");
+                if (Main.getMode().equals("single"))
+                    if (repeated){
+                        Story.priest.speak("Are you mocking me?");
+                        JOptionPane.showMessageDialog(null, "You have lost a guess attempt for angering the priest");
+                        return false;
+                    }
+                    else  {
+                        Story.priest.speak("You've already guessed that letter!\nMake that mistake again and you'll lose a guess attempt");
+                        repeated = true;
+                    }
+                else {
+                    JOptionPane.showMessageDialog(null, "You've guessed that letter already");
                     repeated = true;
                 }
             else

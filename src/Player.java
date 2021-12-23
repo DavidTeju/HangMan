@@ -8,19 +8,23 @@ public class Player extends Story.GameCharacter {
     private final String name;
     private static int playerNumber = 1;
     private final String PLAYER = "Player " + playerNumber;
-    private static int iconNumber = 0;
 
-    public Player(){
-        this.name = JOptionPane.showInputDialog(null, "Please enter your name", PLAYER, JOptionPane.QUESTION_MESSAGE);
-        iconNumber+=(new Random().nextInt(0, 2)); //Use this method to ensure that there is never a duplicate icon for two players
-        iconNumber%=3;
-        setIcon("images\\smile"+iconNumber);
+    public Player(){//Multiplayer constructor
+        name = askName();
         setTitle(name);
         playerNumber++;
     }
-    public Player(String newIcon, String newTitle){
+
+    public Player(String newIcon, String newTitle){//Single-player constructor
         super(newIcon, newTitle);
-        this.name = JOptionPane.showInputDialog(null, "Please enter your name", PLAYER, JOptionPane.QUESTION_MESSAGE);
+        name = askName();
+    }
+
+    private String askName () {
+        String nameHolder = null;
+        while (nameHolder == null)
+            nameHolder = JOptionPane.showInputDialog(null, "Please enter your name", PLAYER, JOptionPane.QUESTION_MESSAGE);
+        return nameHolder;
     }
 
     public String getName() {

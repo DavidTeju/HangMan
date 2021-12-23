@@ -42,16 +42,16 @@ public class Word {
     public static Word generateWord(){
         String secretWord;
         Scanner wordBank;
-        final String bankPath = "hangmanWords.txt";
+        final String wordBankPath = "hangmanWords.txt";
         ArrayList<String> words = new ArrayList<>();
 
         try {
-            wordBank = new Scanner (new File(bankPath));
+            wordBank = new Scanner (new File(wordBankPath));
             while (wordBank.hasNext())
                 words.add(wordBank.next());
         }
         catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Game System Error. " + bankPath + " not found.");
+            JOptionPane.showMessageDialog(null, "Game System Error. " + wordBankPath + " not found.");
         }
 
         secretWord = words.get((new Random()).nextInt(words.size()));

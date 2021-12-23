@@ -95,26 +95,39 @@ public class Word {
                 else //if multiplayer mode then bland prompt
                     JOptionPane.showMessageDialog(null, "Please input a guess");
             }
-            if (attempts.toString().contains(guess + " ✓") || attempts.toString().contains(guess + " X"))
-                if (Main.getMode().equals("single"))
-                    if (repeated){
-                        Story.priest.speak("Are you mocking me?");
-                        JOptionPane.showMessageDialog(null, "You have lost a guess attempt for angering the priest");
-                        return false;
-                    }
-                    else  {
-                        Story.priest.speak("You've already guessed that letter!\nMake that mistake again and you'll lose a guess attempt");
-                        repeated = true;
-                    }
-                else {
+
+            boolean hasBeenGuessed = attempts.toString().contains(guess + " ✓") || attempts.toString().contains(guess + " X");
+            if (Main.getMode().equals("single")) {
+                if (!Character.isLetter(guess) && guess != '\u0000') {//If the guess is not a letter
+                    if (repeated) return punish();
+                    Story.priest.speak("I don't spell words with numbers!\nMake that mistake again and you'll lose a guess attempt");
+                    repeated = true;
+                } else if (hasBeenGuessed) {
+                    if (repeated) return punish();
+                    Story.priest.speak("You've already guessed that letter!\nMake that mistake again and you'll lose a guess attempt");
+                    repeated = true;
+                }
+                else repeated = false;
+            }
+            else {
+                if (!Character.isLetter(guess) && guess != '\u0000') {//If the guess is not a letter
+                    JOptionPane.showMessageDialog(null, "Please guess a letter");
+                    repeated = true;
+                } else if (hasBeenGuessed) {
                     JOptionPane.showMessageDialog(null, "You've guessed that letter already");
                     repeated = true;
                 }
-            else
-                repeated = false;
+            }
         } while (repeated || guess=='\u0000');
 
         return confirmGuess(guess);
+    }
+
+    private boolean punish () {
+        Story.priest.speak("Are you mocking me?");
+        JOptionPane.showMessageDialog(null, "You have lost a guess attempt for angering the priest");
+        attemptsLeft--;
+        return false;
     }
 
     public boolean isGuessed(){

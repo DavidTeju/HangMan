@@ -7,7 +7,7 @@ public class Main {
         TODO Add Timed mode with Time limitations
         TODO Add Leaderboard
         TODO Add Settings and difficulty modes
-        TODO Add Homescreen using JFrame
+        TODO Add Home-screen using JFrame
         TODO Add three player mode with two people guessing one player's word and the player with the highest score winning
          */
     static String mode;
@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         boolean modeNotPicked = true;
         while (modeNotPicked) {
-            int modeCode = JOptionPane.showOptionDialog(null, "Single Player or Multiplayer?", "Welcome!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Multiplayer", "Singleplayer"}, 0);
+            int modeCode = JOptionPane.showOptionDialog(null, "Single Player or Multiplayer?", "Welcome!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Multiplayer", "Single-player"}, 0);
             switch (modeCode) {
                 case 0 -> {
                     mode = "multi";
@@ -95,9 +95,9 @@ public class Main {
             //This loops runs for each guess until the word has been successfully guessed or the player runs out
             while(secretWord.getAttemptsLeft() > 0 && !secretWord.isGuessed())
                 if (secretWord.guess())
-                    Story.correct();
+                    Story.correct();//Runs when you guess correctly
                 else
-                    Story.wrong();
+                    Story.wrong();//Runs when you guess wrong
 
             if (secretWord.isGuessed()) { //Runs when you guess the word correctly
                 try {

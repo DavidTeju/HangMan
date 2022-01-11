@@ -1,23 +1,22 @@
 package src;
 
 import javax.swing.*;
-import java.util.Random;
 
 public class Player extends Story.GameCharacter {
     private int score = 0;
-    private final String name;
+    private final String NAME;
     private static int playerNumber = 1;
     private final String PLAYER = "Player " + playerNumber;
 
     public Player(){//Multiplayer constructor
-        name = askName();
-        setTitle(name);
+        NAME = askName();
+        setTitle(NAME);
         playerNumber++;
     }
 
     public Player(String newIcon, String newTitle){//Single-player constructor
         super(newIcon, newTitle);
-        name = askName();
+        NAME = askName();
     }
 
     private String askName () {
@@ -27,8 +26,8 @@ public class Player extends Story.GameCharacter {
         return nameHolder;
     }
 
-    public String getName() {
-        return name;
+    public String getNAME() {
+        return NAME;
     }
 
     public int getScore(){

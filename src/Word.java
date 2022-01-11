@@ -31,7 +31,7 @@ public class Word {
     }
 
     public static Word getPlayerWord(Player player) {
-        String wordToPass = JOptionPane.showInputDialog(player.getName() + ", please input your secret word");
+        String wordToPass = JOptionPane.showInputDialog(player.getNAME() + ", please input your secret word");
         while (wordToPass.length() > 8 || wordToPass.length() < 4) {
             JOptionPane.showMessageDialog(null, "Please input a word between 4 and 8", "Error", JOptionPane.WARNING_MESSAGE);
             wordToPass = JOptionPane.showInputDialog("Please input your secret word");
@@ -96,7 +96,7 @@ public class Word {
                     JOptionPane.showMessageDialog(null, "Please input a guess");
             }
 
-            boolean hasBeenGuessed = attempts.toString().contains(guess + " ✓") || attempts.toString().contains(guess + " X");
+            boolean hasBeenGuessed = attempts.toString().contains(guess + "");
             if (Main.getMode().equals("single")) {
                 if (!Character.isLetter(guess) && guess != '\u0000') {//If the guess is not a letter
                     if (repeated) return punish();
@@ -110,13 +110,13 @@ public class Word {
                 else repeated = false;
             }
             else {
-                if (!Character.isLetter(guess) && guess != '\u0000') {//If the guess is not a letter
+                if (!Character.isLetter(guess)) {//If the guess is not a letter [ && guess != '\u0000']
                     JOptionPane.showMessageDialog(null, "Please guess a letter");
                     repeated = true;
                 } else if (hasBeenGuessed) {
                     JOptionPane.showMessageDialog(null, "You've guessed that letter already");
                     repeated = true;
-                }
+                } else repeated = false;
             }
         } while (repeated || guess=='\u0000');
 

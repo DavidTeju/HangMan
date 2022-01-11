@@ -17,7 +17,7 @@ public class Story {
     public static void tutorial(){
         boolean questionNotAnswered = true;
         while (questionNotAnswered)
-            switch (JOptionPane.showOptionDialog(null, "Hey, " + player.getName() + ". Do you want to learn how to play Hang Man?", "Tutorial", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"YES", "NO"}, -1)){
+            switch (JOptionPane.showOptionDialog(null, "Hey, " + player.getNAME() + ". Do you want to learn how to play Hang Man?", "Tutorial", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"YES", "NO"}, -1)){
                 case -1:
                     JOptionPane.showMessageDialog(null, "Please select an option", "Error!", JOptionPane.WARNING_MESSAGE);
                     break;
@@ -26,8 +26,9 @@ public class Story {
                 case 0:
                     questionNotAnswered = false;
             }
-        JOptionPane.showMessageDialog(null, "You are given 8 tries and a secret word between 4 and 8 letters long.\nThe objective of the game is to guess the word, one character at a time, before you run out of tries.", "Tutorial", JOptionPane.INFORMATION_MESSAGE);
-        JOptionPane.showMessageDialog(null, "Goodluck!!! You'll need it", "Tutorial", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "You are given 8 tries and a random 4–8 letter secret word.", "Tutorial", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null,"The objective of the game is to guess the word, one letter at a time, before you run out of tries.", "Tutorial", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Good Luck!!! You'll need it", "Tutorial", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void correct(){
@@ -45,14 +46,15 @@ public class Story {
 
     public static void wrong(){
         String insult;
-        switch (new Random().nextInt(6)) {
+        int rand = new Random().nextInt(6);
+        switch (rand) {
             case 1 -> insult = "You witch!";
             case 2 -> insult = "You will burn";
             case 3 -> insult = "One guess closer to the stake";
             case 4 -> insult = "Wrong guess!!";
             case 5 -> insult = "Pray to God that you get the next one";
             case 0 -> insult = "Nope!";
-            default -> throw new IllegalStateException("Unexpected value: " + new Random().nextInt(6));
+            default -> throw new IllegalStateException("Unexpected value: " + rand);
         }
         priest.speak(insult, "Wrong guess");
     }
@@ -99,11 +101,6 @@ public class Story {
         }
 
         public GameCharacter(){
-        }
-
-        public void setIcon(String newIcon){
-            if (icon == null)
-                this.icon = new ImageIcon(newIcon);
         }
 
         public void setTitle(String newTitle){

@@ -10,7 +10,7 @@ public class Main {
         TODO Add Home-screen using JFrame
         TODO Add three player mode with two people guessing one player's word and the player with the highest score winning
          */
-    static String mode;
+    private static String mode;
 
     public static void main(String[] args) {
         boolean modeNotPicked = true;
@@ -34,7 +34,7 @@ public class Main {
         return mode;
     }
 
-    public static void runMultiplayer(){
+   private static void runMultiplayer(){
         Player[] players = {new Player(), new Player()};
         int numOfRounds = 0;
         Player wordMaker;
@@ -49,9 +49,9 @@ public class Main {
             }
 
         for (int i = 0; i<numOfRounds*2; i++){
-            wordMaker = players[i%2];
+            wordMaker = players[i%2];//Switch places
             guesser = players[(i+1)%2];
-            JOptionPane.showMessageDialog(null, String.format("Round %d%nGuesser: %s", (i+2)/2, guesser.getName()));
+            JOptionPane.showMessageDialog(null, String.format("Round %d%nGuesser: %s", (i+2)/2, guesser.getNAME()));
             secretWord = Word.getPlayerWord(wordMaker);
             while(secretWord.getAttemptsLeft() > 0 && !secretWord.isGuessed())
                 if (secretWord.guess())
@@ -60,7 +60,7 @@ public class Main {
                     JOptionPane.showMessageDialog(null, "Wrong!");
 
             if (secretWord.isGuessed()) {
-                JOptionPane.showMessageDialog(null, "Great job guessing the word!\n" + secretWord.getSecretWord());
+                JOptionPane.showMessageDialog(null, "Great job guessing the word!\n\t\"" + secretWord.getSecretWord() + "\"");
                 guesser.awardPoint();
             }
             else
@@ -72,23 +72,22 @@ public class Main {
             JOptionPane.showMessageDialog(null, "Draw!!!");
         }
         else {
-            if (players[0].getScore()>players[1].getScore())
-                winner = players[0];
-            else
-                winner = players[1];
-            JOptionPane.showMessageDialog(null, winner.getName()+ " wins!!!");
+            winner = players[0].getScore()>players[1].getScore()
+                    ? players[0]
+                    : players[1];
+            JOptionPane.showMessageDialog(null, winner.getNAME()+ " wins!!!");
         }
 
         playAgainPrompt();
     }
 
-    public static void runSinglePlayer(){
+    private static void runSinglePlayer(){
         final int NUM_OF_ROUNDS = 3;
         boolean hasLost = false;
         Story.start();
         Story.tutorial();
 
-        //This loop runs for seperate words
+        //This loop runs for separate words
         for (int j = 0; j<NUM_OF_ROUNDS && !hasLost; j++) {
             Word secretWord = Word.generateWord();
 

@@ -1,6 +1,12 @@
 package src;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
     /*TODO Implement score system dependent on percentage correct guesses and difficulty of word (using scrabble points)
@@ -34,26 +40,33 @@ public class Main {
         return mode;
     }
 
-   private static void runMultiplayer(){
-        Player[] players = {new Player(), new Player()};
+    private static void runMultiplayer(){
         int numOfRounds = 0;
         Player wordMaker;
         Player guesser;
         Word secretWord;
+        int numOfPlayers = 0;
 
-        while (numOfRounds == 0)
+        while (numOfRounds == 0 || numOfPlayers == 0)
             try{
+                numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog("How many players"));
                 numOfRounds = Integer.parseInt(JOptionPane.showInputDialog("How many rounds do you wish to play?"));
             }catch (NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Please input a valid whole number");
             }
+        Player[] players = new Player[numOfPlayers];
+        for (int i = 0; i<numOfPlayers; i++)
+            players[i] = new Player();
 
-        for (int i = 0; i<numOfRounds*2; i++){
-            wordMaker = players[i%2];//Switch places
-            guesser = players[(i+1)%2];
-            JOptionPane.showMessageDialog(null, String.format("Round %d%nGuesser: %s", (i+2)/2, guesser.getNAME()));
+        for (int i = 0; i<numOfRounds*numOfPlayers; i++){
+            wordMaker = players[i%numOfPlayers];//Switch places
+            if (players.length == 2) {
+                guesser = players[(i + 1) % 2];
+                JOptionPane.showMessageDialog(null, String.format("Round %d%nGuesser: %s", (i + 2) / 2, guesser.getNAME()));
+            } else JOptionPane.showMessageDialog(null, String.format("Round %d", (i + players.length) / 2));
+
             secretWord = Word.getPlayerWord(wordMaker);
-            while(secretWord.getAttemptsLeft() > 0 && !secretWord.isGuessed())
+            while((secretWord.getAttemptsLeft() > 0 || players.length>2) && !secretWord.isGuessed())
                 if (secretWord.guess())
                     JOptionPane.showMessageDialog(null, "Correct!");
                 else
@@ -61,7 +74,7 @@ public class Main {
 
             if (secretWord.isGuessed()) {
                 JOptionPane.showMessageDialog(null, "Great job guessing the word!\n\t\"" + secretWord.getSecretWord() + "\"");
-                guesser.awardPoint();
+//                guesser.awardPoint();
             }
             else
                 JOptionPane.showMessageDialog(null, "Oh No!\nYou didn't guess the word. It was " + secretWord.getSecretWord());
@@ -84,6 +97,7 @@ public class Main {
     private static void runSinglePlayer(){
         final int NUM_OF_ROUNDS = 3;
         boolean hasLost = false;
+        int score = 0;
         Story.start();
         Story.tutorial();
 
@@ -99,6 +113,7 @@ public class Main {
                     Story.wrong();//Runs when you guess wrong
 
             if (secretWord.isGuessed()) { //Runs when you guess the word correctly
+                score += (secretWord.getAttemptsLeft() +16) * secretWord.getPoints(); //formula for score
                 try {
                     Story.progress(j);
                 } catch (Exception e) {
@@ -109,7 +124,12 @@ public class Main {
                 Story.failed(secretWord.getSecretWord());
             }
         }
-
+        if (!hasLost)
+            try {
+                Scorer.checkHighScore(score, Story.player);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         playAgainPrompt();
     }
 

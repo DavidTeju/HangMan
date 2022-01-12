@@ -46,13 +46,14 @@ public class Story {
 
     public static void wrong(){
         String insult;
-        int rand = new Random().nextInt(6);
+        int rand = new Random().nextInt(7);
         switch (rand) {
             case 1 -> insult = "You witch!";
             case 2 -> insult = "You will burn";
             case 3 -> insult = "One guess closer to the stake";
             case 4 -> insult = "Wrong guess!!";
             case 5 -> insult = "Pray to God that you get the next one";
+            case 6 -> insult = "I will enjoy hanging you";
             case 0 -> insult = "Nope!";
             default -> throw new IllegalStateException("Unexpected value: " + rand);
         }
@@ -86,7 +87,7 @@ public class Story {
     public static void failed(String word){
         priest.speak("You're all out of attempts, witch");
         priest.speak("The word was " + word);
-        priest.speak("TO THE STAKE!! WE SHALL BURN THIS WITCH ALIVE");
+        priest.speak("TO THE ROPES!! WE SHALL HANG THIS WITCH TODAY!");
         JOptionPane.showMessageDialog(null, "You lose");
     }
 
@@ -104,7 +105,7 @@ public class Story {
         }
 
         public void setTitle(String newTitle){
-            if (icon == null)
+            if (icon == null)//So it only works for multiplayer characters/players
                 this.title = newTitle;
         }
 

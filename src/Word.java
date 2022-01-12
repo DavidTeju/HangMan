@@ -15,6 +15,7 @@ public class Word {
     private final HashSet<Integer> ndxFound;
     private final ArrayList<String> attempts = new ArrayList<>();
     private String displayWord = "_ _ _ _ _ _ _ _";
+    private final int points;
 
     public int getAttemptsLeft() {
         return attemptsLeft;
@@ -28,6 +29,7 @@ public class Word {
         this.secretWord = secretWord.toUpperCase();
         ndxFound = new HashSet<>();
         displayWord = displayWord.substring(0, secretWord.length()*2-1);
+        points = Scorer.getWordScore(secretWord);
     }
 
     public static Word getPlayerWord(Player player) {
@@ -56,6 +58,7 @@ public class Word {
 
         secretWord = words.get((new Random()).nextInt(words.size()));
         Story.priest.speak("I have thought of a word. Better get guessing!");
+        System.out.println(secretWord);
         return new Word(secretWord);
     }
 
@@ -132,5 +135,9 @@ public class Word {
 
     public boolean isGuessed(){
         return ndxFound.size() == secretWord.length();
+    }
+
+    public int getPoints() {
+        return points;
     }
 }

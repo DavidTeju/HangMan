@@ -21,8 +21,16 @@ public class Player extends Story.GameCharacter {
 
     private String askName () {
         String nameHolder = null;
-        while (nameHolder == null)
+        while (nameHolder == null) {
             nameHolder = JOptionPane.showInputDialog(null, "Please enter your name", PLAYER, JOptionPane.QUESTION_MESSAGE);
+            if (nameHolder.length() > 10) {
+                JOptionPane.showMessageDialog(null
+                        , "Your name must be 10 letters or less\nPlease shorten your name or use a nickname"
+                        , PLAYER
+                        , JOptionPane.QUESTION_MESSAGE);
+                nameHolder = null;
+            }
+        }
         return nameHolder;
     }
 

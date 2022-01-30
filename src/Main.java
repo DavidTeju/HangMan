@@ -1,12 +1,7 @@
-package src;
-
 import javax.swing.*;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class Main {
     /*TODO Implement score system dependent on percentage correct guesses and difficulty of word (using scrabble points)
@@ -18,7 +13,7 @@ public class Main {
          */
     private static String mode;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         boolean modeNotPicked = true;
         while (modeNotPicked) {
             int modeCode = JOptionPane.showOptionDialog(null, "Single Player or Multiplayer?", "Welcome!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Multiplayer", "Single-player"}, 0);
@@ -40,7 +35,7 @@ public class Main {
         return mode;
     }
 
-    private static void runMultiplayer(){
+    private static void runMultiplayer() throws IOException, URISyntaxException {
         int numOfRounds = 0;
         Player wordMaker;
         Player guesser;
@@ -94,7 +89,7 @@ public class Main {
         playAgainPrompt();
     }
 
-    private static void runSinglePlayer(){
+    private static void runSinglePlayer() throws IOException, URISyntaxException {
         final int NUM_OF_ROUNDS = 3;
         boolean hasLost = false;
         int score = 0;
@@ -133,7 +128,7 @@ public class Main {
         playAgainPrompt();
     }
 
-    private static void playAgainPrompt(){
+    private static void playAgainPrompt() throws IOException, URISyntaxException {
         int playAgain = JOptionPane.showOptionDialog(null, "Play Again?", "Dead End", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Yes", "No"}, -1);
         if (playAgain == 0)
             main(new String[1]);

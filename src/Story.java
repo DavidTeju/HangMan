@@ -1,12 +1,17 @@
-package src;
-
 import javax.swing.*;
+import java.io.File;
+import java.net.URL;
 import java.util.Random;
 
 public class Story {
-    static Player player = new Player("images\\victim.png", "You");
-    static GameCharacter priest = new GameCharacter("images\\puritan.png", "Puritan Priest");
-    static GameCharacter accuser = new GameCharacter("images\\accuser.png", "Accuser");
+    static Player player;
+    static {
+        player = new Player(Story.class.getResource("victim.png"), "You");
+        priest = new GameCharacter(Story.class.getResource("puritan.png"), "Puritan Priest");
+        accuser = new GameCharacter(Story.class.getResource("accuser.png"), "Accuser");
+    }
+    static GameCharacter priest;
+    static GameCharacter accuser;
 
     public static void start(){
         priest.speak("You have been accused of witchcraft and heresy!");
@@ -96,7 +101,7 @@ public class Story {
         private ImageIcon icon = null;
         private String title = null;
 
-        public GameCharacter(String newIcon, String newTitle) {
+        public GameCharacter(URL newIcon, String newTitle) {
             icon = new ImageIcon(newIcon);
             title = newTitle;
         }
@@ -119,4 +124,3 @@ public class Story {
 
     }
 }
-

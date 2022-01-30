@@ -1,5 +1,3 @@
-package src;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,11 +72,18 @@ public class Scorer {
     }
 
     private static void newHighScore(List<List<Object>> leaderboard, int pos) throws FileNotFoundException {
-        var file = new PrintWriter("data-files\\leaderboard.txt");
+        var file  = new File("data-files" + File.separator + "leaderboard.txt");
+        if (!file.exists()){
+            var writer = new PrintWriter(file);
+            for (int i = 0; i<10; i++)
+                writer.println("-----\t0");
+            writer.close();
+        }
+        var writer = new PrintWriter(file);
 
         for (int i = 0; i<10; i++)
-            file.printf("%s\t%d%n", leaderboard.get(i).get(0), (int)leaderboard.get(i).get(1));
-        file.close();
+            writer.printf("%s\t%d%n", leaderboard.get(i).get(0), (int)leaderboard.get(i).get(1));
+        writer.close();
 
         StringBuilder boardToShow = new StringBuilder(String.format("%-10s%-15s%s%n", "", "Name", "Score"));
 
@@ -116,6 +121,4 @@ public class Scorer {
             default -> num + "th";
         };
     }
-
-
 }

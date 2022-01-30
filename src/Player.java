@@ -1,6 +1,5 @@
-package src;
-
 import javax.swing.*;
+import java.net.URL;
 
 public class Player extends Story.GameCharacter {
     private int score = 0;
@@ -14,7 +13,7 @@ public class Player extends Story.GameCharacter {
         playerNumber++;
     }
 
-    public Player(String newIcon, String newTitle){//Single-player constructor
+    public Player(URL newIcon, String newTitle){//Single-player constructor
         super(newIcon, newTitle);
         NAME = askName();
     }

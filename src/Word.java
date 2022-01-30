@@ -1,12 +1,12 @@
-package src;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Scanner;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class Word {
     private final String secretWord;
@@ -41,24 +41,17 @@ public class Word {
         return new Word(wordToPass);
     }
 
-    public static Word generateWord(){
+    public static Word generateWord() throws IOException, URISyntaxException {
         String secretWord;
-        Scanner wordBank;
-        final String wordBankPath = "hangmanWords.txt";
-        ArrayList<String> words = new ArrayList<>();
-
+        URL wordBankPath = Word.class.getResource("hangmanWords.txt");
         try {
-            wordBank = new Scanner (new File(wordBankPath));
-            while (wordBank.hasNext())
-                words.add(wordBank.next());
-        }
-        catch (FileNotFoundException ex) {
+            List<String> words = Files.readAllLines(Paths.get(wordBankPath.toURI()));
+            secretWord = words.get((new Random()).nextInt(words.size()));
+            Story.priest.speak("I have thought of a word. Better get guessing!");
+        } catch (IOException | URISyntaxException e) {
             JOptionPane.showMessageDialog(null, "Game System Error. " + wordBankPath + " not found.");
+            throw e;
         }
-
-        secretWord = words.get((new Random()).nextInt(words.size()));
-        Story.priest.speak("I have thought of a word. Better get guessing!");
-        System.out.println(secretWord);
         return new Word(secretWord);
     }
 

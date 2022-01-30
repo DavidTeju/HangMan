@@ -1,12 +1,13 @@
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 
 public class Word {
     private final String secretWord;
@@ -41,16 +42,17 @@ public class Word {
         return new Word(wordToPass);
     }
 
-    public static Word generateWord() throws IOException, URISyntaxException {
+    public static Word generateWord(){
         String secretWord;
         URL wordBankPath = Word.class.getResource("hangmanWords.txt");
         try {
+            assert wordBankPath != null;
             List<String> words = Files.readAllLines(Paths.get(wordBankPath.toURI()));
             secretWord = words.get((new Random()).nextInt(words.size()));
             Story.priest.speak("I have thought of a word. Better get guessing!");
         } catch (IOException | URISyntaxException e) {
-            JOptionPane.showMessageDialog(null, "Game System Error. " + wordBankPath + " not found.");
-            throw e;
+            JOptionPane.showMessageDialog(null, "Game System Error. " + wordBankPath + " not found.\nPlease restart game");
+            return null;
         }
         return new Word(secretWord);
     }

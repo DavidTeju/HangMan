@@ -13,7 +13,7 @@ public class Main {
          */
     private static String mode;
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args){
         boolean modeNotPicked = true;
         while (modeNotPicked) {
             int modeCode = JOptionPane.showOptionDialog(null, "Single Player or Multiplayer?", "Welcome!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Multiplayer", "Single-player"}, 0);
@@ -35,7 +35,7 @@ public class Main {
         return mode;
     }
 
-    private static void runMultiplayer() throws IOException, URISyntaxException {
+    private static void runMultiplayer(){
         int numOfRounds = 0;
         Player wordMaker;
         Player guesser;
@@ -89,7 +89,7 @@ public class Main {
         playAgainPrompt();
     }
 
-    private static void runSinglePlayer() throws IOException, URISyntaxException {
+    private static void runSinglePlayer(){
         final int NUM_OF_ROUNDS = 3;
         boolean hasLost = false;
         int score = 0;
@@ -101,11 +101,14 @@ public class Main {
             Word secretWord = Word.generateWord();
 
             //This loops runs for each guess until the word has been successfully guessed or the player runs out
-            while(secretWord.getAttemptsLeft() > 0 && !secretWord.isGuessed())
+            while(true) {
+                assert secretWord != null;
+                if (!(secretWord.getAttemptsLeft() > 0 && !secretWord.isGuessed())) break;
                 if (secretWord.guess())
                     Story.correct();//Runs when you guess correctly
                 else
                     Story.wrong();//Runs when you guess wrong
+            }
 
             if (secretWord.isGuessed()) { //Runs when you guess the word correctly
                 score += (secretWord.getAttemptsLeft() +16) * secretWord.getPoints(); //formula for score
@@ -128,7 +131,7 @@ public class Main {
         playAgainPrompt();
     }
 
-    private static void playAgainPrompt() throws IOException, URISyntaxException {
+    private static void playAgainPrompt(){
         int playAgain = JOptionPane.showOptionDialog(null, "Play Again?", "Dead End", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Yes", "No"}, -1);
         if (playAgain == 0)
             main(new String[1]);

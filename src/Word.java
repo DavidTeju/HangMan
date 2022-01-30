@@ -5,10 +5,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class Word {
     private final String secretWord;
@@ -45,15 +43,10 @@ public class Word {
 
     public static Word generateWord(){
         String secretWord;
-        URL wordBankPath = Word.class.getResource("hangmanWords.txt");
-        try {
-            assert wordBankPath != null;
-            List<String> words = Files.readAllLines(Path.of(wordBankPath.getPath()));
+        try (Scanner scanner = new Scanner(Objects.requireNonNull(Word.class.getResourceAsStream("hangmanWords.txt")))){
+            List<String> words = scanner.tokens().toList();
             secretWord = words.get((new Random()).nextInt(words.size()));
             Story.priest.speak("I have thought of a word. Better get guessing!");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Game System Error. " + wordBankPath + " not found.\nPlease restart game");
-            return null;
         }
         return new Word(secretWord);
     }

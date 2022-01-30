@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,10 +48,10 @@ public class Word {
         URL wordBankPath = Word.class.getResource("hangmanWords.txt");
         try {
             assert wordBankPath != null;
-            List<String> words = Files.readAllLines(Paths.get(wordBankPath.toURI()));
+            List<String> words = Files.readAllLines(Path.of(wordBankPath.getPath()));
             secretWord = words.get((new Random()).nextInt(words.size()));
             Story.priest.speak("I have thought of a word. Better get guessing!");
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Game System Error. " + wordBankPath + " not found.\nPlease restart game");
             return null;
         }

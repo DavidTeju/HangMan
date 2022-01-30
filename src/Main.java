@@ -1,12 +1,9 @@
 import javax.swing.*;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class Main {
     /*TODO Implement score system dependent on percentage correct guesses and difficulty of word (using scrabble points)
         TODO Add Timed mode with Time limitations
-        TODO Add Leaderboard
         TODO Add Settings and difficulty modes
         TODO Add Home-screen using JFrame
         TODO Add three player mode with two people guessing one player's word and the player with the highest score winning

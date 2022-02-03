@@ -56,7 +56,7 @@ public class Story {
             case 2 -> insult = "You will burn";
             case 3 -> insult = "One guess closer to the stake";
             case 4 -> insult = "Wrong guess!!";
-            case 5 -> insult = "Pray to God that you get the next one";
+            case 5 -> insult = "God has forsaken you";
             case 6 -> insult = "I will enjoy hanging you";
             case 0 -> insult = "Nope!";
             default -> throw new IllegalStateException("Unexpected value: " + rand);

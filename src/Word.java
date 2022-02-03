@@ -14,7 +14,7 @@ public class Word {
     private int attemptsLeft = MAXIMUM_ATTEMPTS;
     private final HashSet<Integer> ndxFound;
     private final ArrayList<String> attempts = new ArrayList<>();
-    private String displayWord = "_ _ _ _ _ _ _ _";
+    private String displayWord;
     private final int points;
 
     public int getAttemptsLeft() {
@@ -28,7 +28,7 @@ public class Word {
     public Word(String secretWord) {
         this.secretWord = secretWord.toUpperCase();
         ndxFound = new HashSet<>();
-        displayWord = displayWord.substring(0, secretWord.length()*2-1);
+        displayWord = "_"+" _".repeat(secretWord.length()-1);
         points = Scorer.getWordScore(secretWord);
     }
 
@@ -57,7 +57,7 @@ public class Word {
         for (int i = 0; i < secretWord.length(); i++) {
             if (secretWord.charAt(i) == guess) {
                 ndxFound.add(i);
-                int index = (i+1)*2-2;
+                int index = 2*i;
                 displayWord = displayWord.substring(0, index) + guess + displayWord.substring(index+1);
             }
         }

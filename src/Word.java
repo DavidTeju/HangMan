@@ -1,19 +1,14 @@
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import javax.swing.*;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Word {
-	private final String secretWord;
+	private final String wordValue;
 	private final static int MAXIMUM_ATTEMPTS = 8;
 	private int attemptsLeft = MAXIMUM_ATTEMPTS;
 	private final HashSet<Integer> ndxFound;
-	private final ArrayList<String> attempts = new ArrayList<>();
+	private final ArrayList<Guess> attempts = new ArrayList<>();
 	private String displayWord;
 	private final int points;
 	
@@ -21,19 +16,21 @@ public class Word {
 		return attemptsLeft;
 	}
 	
-	public String getSecretWord() {
-		return secretWord;
+	@Override
+	public String toString() {
+		return wordValue;
 	}
 	
-	public Word(String secretWord) {
-		this.secretWord = secretWord.toUpperCase();
+	public Word(String wordValue) {
+		this.wordValue = wordValue.toUpperCase();
 		ndxFound = new HashSet<>();
-		displayWord = "_" + " _".repeat(secretWord.length() - 1);
-		points = Scorer.getWordScore(secretWord);
+		displayWord = "_" + " _".repeat(wordValue.length() - 1);
+		points = Scorer.getWordScore(wordValue);
 	}
 	
 	public static Word getPlayerWord(Player player) {
 		String wordToPass = JOptionPane.showInputDialog(player.getNAME() + ", please input your secret word");
+		if (wordToPass == null) System.exit(1);
 		while (wordToPass.length() > 8 || wordToPass.length() < 4) {
 			JOptionPane.showMessageDialog(null, "Please input a word between 4 and 8", "Error", JOptionPane.WARNING_MESSAGE);
 			wordToPass = JOptionPane.showInputDialog("Please input your secret word");
@@ -42,44 +39,54 @@ public class Word {
 	}
 	
 	public static Word generateWord() {
-		String secretWord;
-		try (Scanner scanner = new Scanner(Objects.requireNonNull(Word.class.getResourceAsStream("hangmanWords.txt")))) {
-			List<String> words = scanner.tokens().toList();
-			secretWord = words.get((new Random()).nextInt(words.size()));
+		try (var streamOfWords = new Scanner(Objects.requireNonNull(Word.class.getResourceAsStream("hangmanWords.txt"))).tokens()) {
+			List<String> words = streamOfWords.toList();
+			String secretWord = words.get((new Random()).nextInt(words.size()));
 			Story.priest.speak("I have thought of a word. Better get guessing!");
+			return new Word(secretWord);
 		}
-		return new Word(secretWord);
 	}
 	
-	private boolean confirmGuess(char guess) {
+	private boolean confirmGuess(Guess guess) {
 		int previousSize = ndxFound.size();
 		
-		for (int i = 0; i < secretWord.length(); i++) {
-			if (secretWord.charAt(i) == guess) {
+		for (int i = 0; i < wordValue.length(); i++)
+			if (wordValue.charAt(i) == guess.charValue) {
 				ndxFound.add(i);
 				int index = 2 * i;
-				displayWord = displayWord.substring(0, index) + guess + displayWord.substring(index + 1);
+				displayWord = displayWord.substring(0, index) + guess.charValue + displayWord.substring(index + 1);
 			}
-		}
 		
-		boolean isCorrect = previousSize != ndxFound.size();
-		if (isCorrect)
-			attempts.add(guess + " ✓");
-		else {
-			attempts.add(guess + " X");
-			attemptsLeft--;
-		}
+		guess.isCorrect = previousSize != ndxFound.size();
+		attempts.add(guess);
+		if (!guess.isCorrect) attemptsLeft--;
 		
-		return isCorrect;
+		return guess.isCorrect;
 	}
 	
 	public boolean guess() {
-		boolean repeated = false;
-		char guess = '\u0000';
+		Guess guess = getPlayerGuess();
+		
+		return confirmGuess(guess);
+	}
+	
+	public boolean guess(Player guesser){
+		Guess guess = getPlayerGuess();
+		
+		if (confirmGuess(guess)) {
+			guesser.awardPoint(Scorer.getLetterScore(guess.charValue));
+			return true;
+		} else return false;
+	}
+	
+	private Guess getPlayerGuess() {
+		Guess guess = null;
+		MutableBoolean repeated = new MutableBoolean(false);
+		boolean guessIsInvalid = true;
 		do {
 			try {
-				guess = JOptionPane.showInputDialog(String.format("Word: %s │ Guesses left: %d%nYour guesses: %s%n%s", displayWord, attemptsLeft, attempts, "What's your next guess?!")).charAt(0);
-				guess = Character.toUpperCase(guess);
+				guess = new Guess(JOptionPane.showInputDialog(String.format("Word: %s │ Guesses left: %d%nYour guesses: %s%n%s", displayWord, attemptsLeft, attempts, "What's your next guess?!")));
+				guessIsInvalid = !guess.isValid(repeated);
 			} catch (StringIndexOutOfBoundsException e) {
 				if (Main.getMode().equals("single"))
 					Story.priest.speak("Speak up!");
@@ -88,30 +95,8 @@ public class Word {
 			} catch (NullPointerException e) {
 				System.exit(1);
 			}
-			
-			boolean hasBeenGuessed = attempts.toString().contains(guess + "");
-			if (Main.getMode().equals("single")) {
-				if (!Character.isLetter(guess) && guess != '\u0000') {//If the guess is not a letter
-					if (repeated) return punish();
-					Story.priest.speak("I don't spell words with numbers!\nMake that mistake again and you'll lose a guess attempt");
-					repeated = true;
-				} else if (hasBeenGuessed) {
-					if (repeated) return punish();
-					Story.priest.speak("You've already guessed that letter!\nMake that mistake again and you'll lose a guess attempt");
-					repeated = true;
-				} else repeated = false;
-			} else {
-				if (!Character.isLetter(guess)) {//If the guess is not a letter [ && guess != '\u0000']
-					JOptionPane.showMessageDialog(null, "Please guess a letter");
-					repeated = true;
-				} else if (hasBeenGuessed) {
-					JOptionPane.showMessageDialog(null, "You've guessed that letter already");
-					repeated = true;
-				} else repeated = false;
-			}
-		} while (repeated || guess == '\u0000');
-		
-		return confirmGuess(guess);
+		} while (repeated.booleanValue() || guessIsInvalid);
+		return guess;
 	}
 	
 	private boolean punish() {
@@ -122,10 +107,69 @@ public class Word {
 	}
 	
 	public boolean isGuessed() {
-		return ndxFound.size() == secretWord.length();
+		return ndxFound.size() == wordValue.length();
 	}
 	
 	public int getPoints() {
 		return points;
+	}
+	
+	class Guess {
+		private final char charValue;
+		private boolean isCorrect;
+		
+		Guess(String guess) {
+			charValue = Character.toUpperCase(guess.charAt(0));
+		}
+		
+		private boolean isValid(MutableBoolean repeated) {
+			boolean hasBeenGuessed = attempts.contains(this);
+			if (Main.getMode().equals("single")) {
+				if (!Character.isLetter(this.charValue) && this.charValue != '\u0000') {//If the guess is not a letter
+					if (repeated.booleanValue()) return punish();
+					Story.priest.speak("I don't spell words with numbers!\nMake that mistake again and you'll lose a guess attempt");
+					repeated.setTrue();
+					return false;
+				}
+				if (hasBeenGuessed) {
+					if (repeated.booleanValue()) return punish();
+					Story.priest.speak("You've already guessed that letter!\nMake that mistake again and you'll lose a guess attempt");
+					repeated.setTrue();
+					return false;
+				}
+			} else {
+				if (!Character.isLetter(this.charValue)) {//If the guess is not a letter [ && guess != '\u0000']
+					JOptionPane.showMessageDialog(null, "Please guess a letter");
+					repeated.setTrue();
+					return false;
+				}
+				if (hasBeenGuessed) {
+					JOptionPane.showMessageDialog(null, "You've guessed that letter already");
+					repeated.setTrue();
+					return false;
+				}
+			}
+			
+			repeated.setFalse();
+			return true;
+		}
+		
+		@Override
+		public boolean equals(Object toEqual) {
+			if (this == toEqual) return true;
+			if (toEqual == null || getClass() != toEqual.getClass()) return false;
+			Guess guessToCheck = (Guess) toEqual;
+			return charValue == guessToCheck.charValue && isCorrect == guessToCheck.isCorrect;
+		}
+		
+		@Override
+		public int hashCode() {
+			return Objects.hash(charValue, isCorrect);
+		}
+		
+		@Override
+		public String toString() {
+			return charValue + (isCorrect ? " ✓" : " X");
+		}
 	}
 }

@@ -3,7 +3,7 @@ import java.net.URL;
 import java.util.Random;
 
 public class Story {
-	static Player player;
+	static final Player player;
 	
 	static {
 		player = new Player(Story.class.getResource("victim.png"), "You");
@@ -11,8 +11,8 @@ public class Story {
 		accuser = new GameCharacter(Story.class.getResource("accuser.png"), "Accuser");
 	}
 	
-	static GameCharacter priest;
-	static GameCharacter accuser;
+	static final GameCharacter priest;
+	static final GameCharacter accuser;
 	
 	public static void start() {
 		priest.speak("You have been accused of witchcraft and heresy!");

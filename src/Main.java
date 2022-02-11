@@ -5,11 +5,10 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class Main {
-	/*TODO Implement score system dependent on percentage correct guesses and difficulty of word (using scrabble points)
+	/*
 		TODO Add Timed mode with Time limitations
 		TODO Add Settings and difficulty modes
 		TODO Add Home-screen using JFrame
-		TODO Add three player mode with two people guessing one player's word and the player with the highest score winning
 		 */
 	private static String mode;
 	
